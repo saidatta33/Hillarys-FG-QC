@@ -4,7 +4,16 @@ export default async function handler(req, res) {
   }
 
   try {
-    const { pdfBase64 } = req.body;
+    const { pdfBase64, prompt } = req.body;
+
+    const defaultPrompt = `Extract ALL product line items from this Insyte job sheet PDF.
+Return ONLY a valid JSON array. No markdown, no backticks, no explanation.
+Each object: {"lineNo":number,"location":"room name","type":"Curtain or Blind","section":"Curtain/Roman Blind/Roller Shades/Day & Night Shades/Wood Blinds","fabricCode":"full product code","fabric":"name only no codes","width":"mm","drop":"mm","mountType":"In or Out","mountDetail":"Ceiling Mount or Wall Mount","trackType":"I Track or Sleek M Track or Rod or none","trackVendor":"vendor or none","lining":"Yes or No","liningType":"Dimout or Blackout or Regular or none","liningFabric":"lining name or none","headingType":"heading style","panels":"number","stack":"stack direction","controlSystem":"Manual or Motorised","installSurface":"Normal or Granite etc","fabricVendor":"vendor name"}
+Rules:
+- type = Curtain for Curtain section, Blind for everything else
+- fabric field: name only, no codes, no W:3000 suffix, no Translucent/Blackout/Dimout prefix
+- fabricCode: the full product code e.g. MPTS012090169
+- Include every single row from every table`;
 
     const response = await fetch('https://api.anthropic.com/v1/messages', {
       method: 'POST',
@@ -19,20 +28,8 @@ export default async function handler(req, res) {
         messages: [{
           role: 'user',
           content: [
-            {
-              type: 'document',
-              source: { type: 'base64', media_type: 'application/pdf', data: pdfBase64 }
-            },
-            {
-              type: 'text',
-              text: `Extract ALL product line items from this Insyte job sheet PDF.
-Return ONLY a valid JSON array. No markdown, no backticks, no explanation.
-Each object: {"lineNo":number,"location":"room name","type":"Curtain or Blind","section":"Curtain/Roman Blind/Roller Shades/Day & Night Shades/Wood Blinds","fabric":"name only no codes","width":"mm","drop":"mm"}
-Rules:
-- type = Curtain for Curtain section, Blind for everything else
-- fabric: remove product codes like MJQS075790012, remove Room Darkening/Translucent/Light Filtering prefix, remove W: 3000 suffix. Just the name e.g. Clarke Beige
-- Include every single row from every table`
-            }
+            { type: 'document', source: { type: 'base64', media_type: 'application/pdf', data: pdfBase64 } },
+            { type: 'text', text: prompt || defaultPrompt }
           ]
         }]
       })
