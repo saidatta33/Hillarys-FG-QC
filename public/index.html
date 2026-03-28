@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Hillarys QC Inspector</title>
+<title>Hillarys QC & SOW Inspector</title>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 <style>
 *{margin:0;padding:0;box-sizing:border-box;}
@@ -13,46 +13,71 @@ header{background:#1E2235;padding:12px 20px;display:flex;align-items:center;gap:
 .logo-sub{font-size:9px;color:rgba(255,255,255,.4);letter-spacing:3px;}
 .pill{background:rgba(255,255,255,.12);color:rgba(255,255,255,.75);padding:2px 9px;border-radius:4px;font-size:11px;font-weight:600;}
 .pill-red{background:#C8314A;color:#fff;padding:2px 9px;border-radius:4px;font-size:11px;font-weight:700;}
+
+/* TABS */
+.tab-bar{background:#fff;border-bottom:1px solid #E5E7EB;display:flex;padding:0 20px;}
+.tab-btn{padding:14px 24px;font-size:13px;font-weight:600;color:#9CA3AF;border:none;background:none;cursor:pointer;border-bottom:3px solid transparent;margin-bottom:-1px;transition:all .15s;}
+.tab-btn.active{color:#1E2235;border-bottom-color:#C8314A;}
+.tab-btn:hover{color:#1E2235;}
+.tab-pane{display:none;}
+.tab-pane.active{display:block;}
+
 .main{max-width:1000px;margin:0 auto;padding:20px 20px 60px;}
+
+/* ORDER BAR */
 .order-bar{display:grid;grid-template-columns:1fr 1fr;gap:12px;background:#fff;border:1px solid #E5E7EB;border-radius:8px;padding:16px;margin-bottom:16px;}
 .fld label{display:block;font-size:10px;font-weight:700;letter-spacing:.8px;text-transform:uppercase;color:#9CA3AF;margin-bottom:5px;}
 .fld input{width:100%;border:1px solid #E5E7EB;border-radius:6px;padding:8px 11px;font-size:13px;font-family:system-ui;color:#111827;outline:none;}
 .fld input:focus{border-color:#1E2235;}
+
+/* PDF ZONE */
 .pdf-zone{border:2px dashed #E5DBCA;border-radius:8px;background:#fff;padding:28px 20px;text-align:center;cursor:pointer;position:relative;transition:all .15s;margin-bottom:14px;}
 .pdf-zone:hover,.pdf-zone.drag{border-color:#1E2235;background:#f0f1ff;}
 .pdf-zone input{position:absolute;inset:0;opacity:0;cursor:pointer;width:100%;height:100%;}
 .pdf-zone h3{font-size:15px;font-weight:700;margin-bottom:4px;}
 .pdf-zone p{font-size:12px;color:#9CA3AF;}
 .pdf-zone p b{color:#1E2235;}
+
+/* SPINNER */
 .spinner-wrap{display:none;position:absolute;inset:0;background:rgba(250,243,232,.95);border-radius:8px;flex-direction:column;align-items:center;justify-content:center;gap:10px;z-index:5;}
 .spinner-wrap.show{display:flex;}
 .spinner{width:30px;height:30px;border:3px solid #E5DBCA;border-top-color:#1E2235;border-radius:50%;animation:spin .7s linear infinite;}
 @keyframes spin{to{transform:rotate(360deg);}}
 .sp-txt{font-size:13px;font-weight:700;color:#1E2235;}
 .sp-sub{font-size:11px;color:#9CA3AF;}
+
+/* TAGS */
 .job-tag{display:none;align-items:center;gap:6px;background:#D1FAE5;color:#059669;border:1px solid rgba(5,150,105,.2);padding:5px 14px;border-radius:100px;font-size:11px;font-weight:600;margin-bottom:12px;}
 .job-tag.show{display:inline-flex;}
 .err-tag{display:none;background:#FDEAED;color:#C8314A;border:1px solid rgba(200,49,74,.2);padding:10px 14px;border-radius:8px;font-size:12px;font-weight:600;margin-bottom:12px;}
 .err-tag.show{display:block;}
 .warn-tag{display:none;background:#FEF3C7;color:#92400E;border:1px solid rgba(217,119,6,.2);padding:10px 14px;border-radius:8px;font-size:12px;font-weight:600;margin-bottom:12px;}
 .warn-tag.show{display:block;}
+
+/* CHIPS */
 .chips{display:flex;gap:6px;margin-bottom:14px;flex-wrap:wrap;}
 .chip{padding:3px 11px;border-radius:100px;font-size:11px;font-weight:600;border:1px solid transparent;}
 .c-tot{background:#F2EBD9;color:#4B5563;border-color:#E5DBCA;}
 .c-ok{background:#D1FAE5;color:#059669;}
 .c-pend{background:#FEF3C7;color:#D97706;}
 .c-rej{background:#FDEAED;color:#C8314A;}
+
+/* SECTION */
 .sec-hdr{background:#1E2235;color:#fff;font-size:10px;font-weight:700;letter-spacing:1px;text-transform:uppercase;padding:6px 12px;border-radius:8px 8px 0 0;margin-top:14px;}
 .tbl{width:100%;border-collapse:collapse;background:#fff;border:1px solid #E5E7EB;border-top:none;margin-bottom:4px;}
 .tbl th{background:#F2EBD9;color:#4B5563;font-weight:700;font-size:10px;letter-spacing:.5px;text-transform:uppercase;padding:8px 12px;text-align:left;border-bottom:1px solid #E5DBCA;}
 .tbl td{padding:9px 12px;border-bottom:1px solid #E5E7EB;vertical-align:middle;}
 .tbl tr:last-child td{border-bottom:none;}
 .tbl tr.hi td{background:#f0fff8;}
+
+/* BADGES */
 .badge{display:inline-flex;align-items:center;padding:2px 8px;border-radius:100px;font-size:10px;font-weight:700;white-space:nowrap;}
 .b-c{background:#DBEAFE;color:#2563EB;}.b-b{background:#FEF3C7;color:#D97706;}
 .b-none{background:#F2EBD9;color:#9CA3AF;}.b-ok{background:#D1FAE5;color:#059669;}
 .b-part{background:#FEF9C3;color:#854D0E;}.b-pend{background:#FEF3C7;color:#D97706;}
 .b-rej{background:#FDEAED;color:#C8314A;}
+
+/* EXPAND */
 .exp-btn{background:#1E2235;color:#fff;border:none;cursor:pointer;font-size:12px;padding:5px 12px;border-radius:6px;font-weight:600;}
 .exp-btn.closed{background:#fff;color:#4B5563;border:1px solid #E5E7EB;}
 .qr{display:none;}.qr.open{display:table-row;}
@@ -61,35 +86,64 @@ header{background:#1E2235;padding:12px 20px;display:flex;align-items:center;gap:
 .qi-info{display:flex;align-items:center;gap:8px;flex-wrap:wrap;}
 .qi-info strong{font-size:14px;font-weight:700;}
 .qi-info span{font-size:11px;color:#4B5563;}
-.up-big{border:2px dashed #C8314A;border-radius:12px;background:rgba(200,49,74,.04);padding:28px 20px;text-align:center;cursor:pointer;position:relative;margin-bottom:12px;animation:pulse 2s ease-in-out infinite;}
-.up-big:hover{background:rgba(200,49,74,.09);animation:none;}
+
+/* CATEGORY UPLOAD SECTIONS */
+.cat-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:10px;margin-bottom:12px;}
+.cat-box{background:#fff;border:1px solid #E5E7EB;border-radius:8px;overflow:hidden;}
+.cat-title{background:#1E2235;color:#fff;font-size:10px;font-weight:700;padding:5px 10px;letter-spacing:.5px;text-transform:uppercase;display:flex;align-items:center;gap:6px;}
+.cat-body{padding:10px;}
+.up-cat{border:1.5px dashed #C8314A;border-radius:6px;background:rgba(200,49,74,.03);padding:12px;text-align:center;cursor:pointer;position:relative;transition:all .15s;margin-bottom:8px;animation:pulse 2s ease-in-out infinite;}
+.up-cat:hover{background:rgba(200,49,74,.08);animation:none;}
+.up-cat input{position:absolute;inset:0;opacity:0;cursor:pointer;width:100%;height:100%;}
+.up-cat p{font-size:11px;color:#C8314A;font-weight:600;}
 @keyframes pulse{0%,100%{border-color:#C8314A;}50%{border-color:#ff8c9e;}}
-.up-big input{position:absolute;inset:0;opacity:0;cursor:pointer;width:100%;height:100%;}
-.up-big .ic{font-size:36px;margin-bottom:8px;}
-.up-big h3{font-size:15px;font-weight:700;margin-bottom:4px;}
-.up-big p{font-size:12px;color:#4B5563;margin-bottom:10px;}
-.up-big .cta{display:inline-block;background:#C8314A;color:#fff;border-radius:100px;padding:7px 20px;font-size:13px;font-weight:700;}
-.up-mini{display:inline-flex;align-items:center;gap:5px;padding:6px 14px;border:1px dashed #E5E7EB;border-radius:6px;cursor:pointer;position:relative;font-size:12px;font-weight:600;color:#4B5563;background:#fff;}
+.up-mini{display:inline-flex;align-items:center;gap:5px;padding:5px 11px;border:1px dashed #E5E7EB;border-radius:6px;cursor:pointer;position:relative;font-size:11px;font-weight:600;color:#4B5563;background:#fff;}
 .up-mini input{position:absolute;inset:0;opacity:0;cursor:pointer;width:100%;height:100%;}
-.ig{display:grid;grid-template-columns:repeat(auto-fill,minmax(110px,1fr));gap:8px;margin-top:4px;}
-.it{position:relative;aspect-ratio:1;border-radius:8px;overflow:hidden;border:1px solid #E5E7EB;background:#E5DBCA;}
+
+/* IMG GRID */
+.ig{display:grid;grid-template-columns:repeat(auto-fill,minmax(80px,1fr));gap:6px;}
+.it{position:relative;aspect-ratio:1;border-radius:6px;overflow:hidden;border:1px solid #E5E7EB;background:#E5DBCA;}
 .it img{width:100%;height:100%;object-fit:cover;display:block;}
-.st{position:absolute;top:0;left:0;padding:3px 8px;font-size:9px;font-weight:700;letter-spacing:.8px;text-transform:uppercase;}
+.st{position:absolute;top:0;left:0;padding:2px 6px;font-size:8px;font-weight:700;text-transform:uppercase;}
 .st-p{background:rgba(251,191,36,.9);color:#78350F;}
 .st-ok{background:rgba(5,150,105,.92);color:#fff;}
 .st-rej{background:rgba(200,49,74,.92);color:#fff;}
-.ac{position:absolute;inset:0;display:flex;align-items:flex-end;justify-content:center;gap:5px;padding-bottom:10px;background:linear-gradient(to top,rgba(0,0,0,.65) 0%,transparent 55%);opacity:0;transition:opacity .15s;}
+.ac{position:absolute;inset:0;display:flex;align-items:flex-end;justify-content:center;gap:4px;padding-bottom:6px;background:linear-gradient(to top,rgba(0,0,0,.65) 0%,transparent 55%);opacity:0;transition:opacity .15s;}
 .it:hover .ac,.it:active .ac{opacity:1;}
-.ia{width:34px;height:34px;border:none;border-radius:50%;cursor:pointer;font-size:17px;display:flex;align-items:center;justify-content:center;font-weight:700;}
+.ia{width:26px;height:26px;border:none;border-radius:50%;cursor:pointer;font-size:13px;display:flex;align-items:center;justify-content:center;font-weight:700;}
 .ia-ok{background:#059669;color:#fff;}.ia-rej{background:#C8314A;color:#fff;}.ia-del{background:rgba(255,255,255,.9);color:#444;}
-.empty-imgs{text-align:center;padding:16px;color:#9CA3AF;font-size:12px;}
+.empty-imgs{text-align:center;padding:10px;color:#9CA3AF;font-size:11px;}
+
+/* GEN BAR */
 .gen-bar{background:#fff;border:1px solid #E5E7EB;border-radius:10px;padding:18px 20px;display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap;margin-top:20px;}
 .gen-bar h3{font-size:15px;font-weight:700;margin-bottom:3px;}
 .gen-bar p{font-size:11px;color:#9CA3AF;}
 .btn-gen{background:#C8314A;color:#fff;border:none;border-radius:8px;padding:13px 28px;font-size:14px;font-weight:700;cursor:pointer;white-space:nowrap;transition:all .15s;}
 .btn-gen:hover{background:#a0263d;transform:translateY(-1px);}
 .btn-gen:disabled{opacity:.4;cursor:not-allowed;transform:none;}
-@media(max-width:600px){.order-bar{grid-template-columns:1fr;}.gen-bar{flex-direction:column;align-items:flex-start;}.tbl th:nth-child(4),.tbl td:nth-child(4){display:none;}}
+
+/* SOW STYLES */
+.sow-card{background:#fff;border:1px solid #E5E7EB;border-radius:8px;margin-bottom:14px;overflow:hidden;}
+.sow-hdr{background:#1E2235;color:#fff;padding:10px 16px;display:flex;align-items:center;justify-content:space-between;}
+.sow-hdr h3{font-size:13px;font-weight:700;}
+.sow-hdr span{font-size:10px;color:rgba(255,255,255,.6);background:rgba(255,255,255,.1);padding:2px 8px;border-radius:10px;}
+.sow-body{padding:14px 16px;}
+.sow-row{display:flex;gap:8px;margin-bottom:8px;align-items:flex-start;flex-wrap:wrap;}
+.sow-label{font-size:10px;font-weight:700;letter-spacing:.5px;text-transform:uppercase;color:#9CA3AF;min-width:120px;padding-top:2px;}
+.sow-val{font-size:12px;color:#111827;font-weight:500;flex:1;}
+.sow-badge{display:inline-flex;padding:2px 8px;border-radius:100px;font-size:10px;font-weight:700;}
+.sow-ok{background:#D1FAE5;color:#059669;}
+.sow-warn{background:#FEF3C7;color:#D97706;}
+.sow-info{background:#DBEAFE;color:#2563EB;}
+.sow-note{background:#FEF3C7;color:#92400E;border:1px solid rgba(217,119,6,.2);padding:8px 12px;border-radius:6px;font-size:11px;margin-top:8px;line-height:1.5;}
+.sow-divider{height:1px;background:#F3F4F6;margin:10px 0;}
+
+/* SOW img upload */
+.fab-upload{border:1px dashed #E5E7EB;border-radius:6px;padding:8px 12px;cursor:pointer;position:relative;display:inline-flex;align-items:center;gap:6px;font-size:11px;color:#4B5563;background:#FAF3E8;}
+.fab-upload input{position:absolute;inset:0;opacity:0;cursor:pointer;width:100%;height:100%;}
+.fab-thumb{width:60px;height:60px;border-radius:6px;object-fit:cover;border:1px solid #E5E7EB;cursor:pointer;}
+
+@media(max-width:600px){.order-bar{grid-template-columns:1fr;}.gen-bar{flex-direction:column;align-items:flex-start;}.cat-grid{grid-template-columns:1fr 1fr;}}
 </style>
 </head>
 <body>
@@ -101,326 +155,776 @@ header{background:#1E2235;padding:12px 20px;display:flex;align-items:center;gap:
   <span class="pill-red">QC</span>
 </header>
 
+<!-- TABS -->
+<div class="tab-bar">
+  <button class="tab-btn active" onclick="switchTab('qc',this)">&#10003; QC Approval</button>
+  <button class="tab-btn" onclick="switchTab('sow',this)">&#128196; SOW Approval</button>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════
+     QC TAB
+═══════════════════════════════════════════════════════ -->
+<div id="tab-qc" class="tab-pane active">
 <div class="main">
 
   <div class="order-bar">
-    <div class="fld"><label>Order / Job Number</label><input type="text" id="orderNum" placeholder="e.g. J0002648-1"></div>
-    <div class="fld"><label>Inspector Name</label><input type="text" id="inspector" placeholder="e.g. Priya Sharma"></div>
+    <div class="fld"><label>Order / Job Number</label><input type="text" id="qcOrderNum" placeholder="e.g. J0002648-1"></div>
+    <div class="fld"><label>Inspector Name</label><input type="text" id="qcInspector" placeholder="e.g. Priya Sharma"></div>
   </div>
 
-  <div class="pdf-zone" id="pdfZone"
+  <div class="pdf-zone" id="qcPdfZone"
     ondragover="event.preventDefault();this.classList.add('drag')"
     ondragleave="this.classList.remove('drag')"
-    ondrop="event.preventDefault();this.classList.remove('drag');handlePdf(event.dataTransfer.files)">
-    <input type="file" accept=".pdf" id="pdfIn" onchange="handlePdf(this.files)">
-    <div class="spinner-wrap" id="spinner">
+    ondrop="event.preventDefault();this.classList.remove('drag');handlePdf(event.dataTransfer.files,'qc')">
+    <input type="file" accept=".pdf" id="qcPdfIn" onchange="handlePdf(this.files,'qc')">
+    <div class="spinner-wrap" id="qcSpinner">
       <div class="spinner"></div>
-      <div class="sp-txt" id="spTxt">Reading PDF...</div>
-      <div class="sp-sub" id="spSub">Please wait</div>
+      <div class="sp-txt" id="qcSpTxt">Reading PDF...</div>
+      <div class="sp-sub" id="qcSpSub">Please wait</div>
     </div>
-    <div style="font-size:32px;margin-bottom:8px" id="pdfIcon">📄</div>
-    <h3 id="pdfTitle">Drop Insyte Job PDF here</h3>
+    <div style="font-size:32px;margin-bottom:8px" id="qcPdfIcon">📄</div>
+    <h3 id="qcPdfTitle">Drop Insyte Job PDF here</h3>
     <p>or <b>click to browse</b> &mdash; all rooms auto-fill automatically</p>
   </div>
 
-  <div id="jobTag" class="job-tag">&#10003; <span id="jobTagTxt"></span></div>
-  <div id="errTag" class="err-tag"></div>
-  <div id="warnTag" class="warn-tag"></div>
+  <div id="qcJobTag" class="job-tag">&#10003; <span id="qcJobTagTxt"></span></div>
+  <div id="qcErrTag" class="err-tag"></div>
+  <div id="qcWarnTag" class="warn-tag"></div>
 
-  <div id="chips" class="chips">
+  <div id="qcChips" class="chips">
     <span class="chip c-tot">0 Total</span>
     <span class="chip c-ok">0 Approved</span>
     <span class="chip c-pend">0 Pending</span>
     <span class="chip c-rej">0 Rejected</span>
   </div>
 
-  <div id="tableArea"></div>
+  <div id="qcTableArea"></div>
 
   <div class="gen-bar">
     <div>
       <h3>Download QC Report PDF</h3>
-      <p>Upload photos &rarr; tap &#10003; green to approve &rarr; download</p>
+      <p>Upload photos per category &rarr; approve &rarr; download</p>
     </div>
-    <button class="btn-gen" id="genBtn" onclick="genPDF()">&#8595; Download PDF Report</button>
+    <button class="btn-gen" id="qcGenBtn" onclick="genQCPDF()">&#8595; Download QC Report</button>
   </div>
+</div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════
+     SOW TAB
+═══════════════════════════════════════════════════════ -->
+<div id="tab-sow" class="tab-pane">
+<div class="main">
+
+  <div class="order-bar">
+    <div class="fld"><label>Order / Job Number</label><input type="text" id="sowOrderNum" placeholder="e.g. J0002648-1"></div>
+    <div class="fld"><label>Prepared By</label><input type="text" id="sowPrepared" placeholder="e.g. Sai Datta"></div>
+  </div>
+
+  <div class="pdf-zone" id="sowPdfZone"
+    ondragover="event.preventDefault();this.classList.add('drag')"
+    ondragleave="this.classList.remove('drag')"
+    ondrop="event.preventDefault();this.classList.remove('drag');handlePdf(event.dataTransfer.files,'sow')">
+    <input type="file" accept=".pdf" id="sowPdfIn" onchange="handlePdf(this.files,'sow')">
+    <div class="spinner-wrap" id="sowSpinner">
+      <div class="spinner"></div>
+      <div class="sp-txt" id="sowSpTxt">Reading PDF...</div>
+      <div class="sp-sub" id="sowSpSub">Please wait</div>
+    </div>
+    <div style="font-size:32px;margin-bottom:8px" id="sowPdfIcon">📄</div>
+    <h3 id="sowPdfTitle">Drop Insyte Job PDF here</h3>
+    <p>or <b>click to browse</b> &mdash; SOW summary auto-generates</p>
+  </div>
+
+  <div id="sowJobTag" class="job-tag">&#10003; <span id="sowJobTagTxt"></span></div>
+  <div id="sowErrTag" class="err-tag"></div>
+
+  <div id="sowCards"></div>
+
+  <div id="sowGenBar" style="display:none" class="gen-bar">
+    <div>
+      <h3>Download SOW Document</h3>
+      <p>Review summary below &rarr; add fabric images &rarr; download</p>
+    </div>
+    <button class="btn-gen" id="sowGenBtn" onclick="genSOWPDF()">&#8595; Download SOW</button>
+  </div>
+</div>
 </div>
 
 <script>
-var ITEMS = [];
+// ── STATE ─────────────────────────────────────────────────
+var QC_ITEMS = [];   // full rich items for QC
+var SOW_ITEMS = [];  // full rich items for SOW
 
-function handlePdf(files) {
+// QC categories per item
+var QC_CATS = ['Fabric / Curtain', 'Track / I-Track / M-Track / Rod', 'Blind', 'Brackets & Hardware', 'Overall / Installed'];
+
+// ── TABS ──────────────────────────────────────────────────
+function switchTab(tab, btn) {
+  document.querySelectorAll('.tab-pane').forEach(function(p){p.classList.remove('active');});
+  document.querySelectorAll('.tab-btn').forEach(function(b){b.classList.remove('active');});
+  document.getElementById('tab-'+tab).classList.add('active');
+  btn.classList.add('active');
+}
+
+// ── PDF PARSE ─────────────────────────────────────────────
+function handlePdf(files, mode) {
   var file = files[0];
-  if (!file || !file.name.toLowerCase().endsWith('.pdf')) { showErr('Please select a PDF file'); return; }
-  hideErr(); hideWarn();
-  showSpinner('Reading PDF...', 'Uploading...');
+  if (!file || !file.name.toLowerCase().endsWith('.pdf')) { showErr(mode,'Please select a PDF file'); return; }
+  hideErr(mode);
+  showSpinner(mode, 'Reading PDF...', 'Uploading...');
   var reader = new FileReader();
-  reader.onload = function(e) {
-    var b64 = e.target.result.split(',')[1];
-    callParse(b64, file.name);
-  };
-  reader.onerror = function() { hideSpinner(); showErr('Could not read file'); };
+  reader.onload = function(e) { callParse(e.target.result.split(',')[1], file.name, mode); };
+  reader.onerror = function() { hideSpinner(mode); showErr(mode,'Could not read file'); };
   reader.readAsDataURL(file);
 }
 
-function callParse(b64, filename) {
-  setSpinSub('AI extracting rooms...');
+function callParse(b64, filename, mode) {
+  setSpinSub(mode, 'AI extracting all data...');
+
+  // Different prompt for SOW vs QC — SOW needs ALL fields
+  var prompt = mode === 'sow'
+    ? `Extract ALL product line items from this Insyte job sheet PDF with FULL details.
+Return ONLY a valid JSON array. No markdown, no backticks.
+Each object must have:
+{
+  "lineNo": number,
+  "location": "room name",
+  "type": "Curtain or Blind",
+  "section": "Curtain/Roman Blind/Roller Shades/Day & Night Shades/Wood Blinds",
+  "fabricCode": "full code e.g. MPTS012090169",
+  "fabric": "name only e.g. Arden Antique Beige",
+  "fabricVendor": "vendor name",
+  "width": "mm",
+  "drop": "mm",
+  "mountType": "In or Out (ceiling/wall)",
+  "mountDetail": "Ceiling Mount or Wall Mount or Single Wall Mount or Double Wall Mount",
+  "trackType": "I Track or Sleek M Track or Rod or none",
+  "trackVendor": "track vendor",
+  "lining": "Yes or No",
+  "liningType": "Dimout or Blackout or Regular or none",
+  "liningFabric": "lining code and name or none",
+  "headingType": "Triple Pinch Pleat or Ripplefold etc",
+  "panels": "number of panels",
+  "stack": "Free or Centre Open or Left Stack or Right Stack",
+  "controlSystem": "Manual or Motorised",
+  "installSurface": "Normal or Granite"
+}
+Include every row from every table.`
+    : `Extract ALL product line items from this Insyte job sheet PDF.
+Return ONLY a valid JSON array. No markdown, no backticks.
+Each object: {"lineNo":number,"location":"room name","type":"Curtain or Blind","section":"Curtain/Roman Blind/Roller Shades/Day & Night Shades/Wood Blinds","fabricCode":"full code","fabric":"name only","width":"mm","drop":"mm","mountDetail":"mount type","trackType":"track type","lining":"Yes or No","liningType":"Dimout or Blackout or Regular or none","controlSystem":"Manual or Motorised"}
+Rules: fabric = name only no codes in this field. Include every single row.`;
+
   fetch('/api/parse', {
     method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ pdfBase64: b64, filename: filename })
+    headers: {'Content-Type': 'application/json'},
+    body: JSON.stringify({pdfBase64: b64, filename: filename, prompt: prompt})
   })
-  .then(function(r) { return r.json(); })
-  .then(function(data) {
-    hideSpinner();
-    if (data.error) { showErr('Error: ' + data.error); return; }
-    if (!data.items || !data.items.length) { showErr('No items found in PDF — is this an Insyte job sheet?'); return; }
-    ITEMS = data.items.map(function(it, i) {
-      return { lineNo:i+1, location:String(it.location||''), type:String(it.type||'Curtain'),
-               section:String(it.section||'Curtain'), fabric:String(it.fabric||''),
-               width:String(it.width||''), drop:String(it.drop||''), images:[] };
+  .then(function(r){ return r.json(); })
+  .then(function(data){
+    hideSpinner(mode);
+    if (data.error) { showErr(mode, 'Error: '+data.error); return; }
+    if (!data.items || !data.items.length) { showErr(mode, 'No items found — is this an Insyte job sheet?'); return; }
+
+    var items = data.items.map(function(it,i){
+      // Add image categories for QC
+      var cats = {};
+      QC_CATS.forEach(function(c){ cats[c] = []; });
+      return Object.assign({lineNo:i+1, images:cats, fabricImg:null}, it);
     });
-    if (!document.getElementById('orderNum').value)
-      document.getElementById('orderNum').value = filename.replace('.pdf','');
-    document.getElementById('pdfIcon').textContent = '✅';
-    document.getElementById('pdfTitle').textContent = filename + ' — loaded';
-    document.getElementById('jobTag').classList.add('show');
-    document.getElementById('jobTagTxt').textContent = ITEMS.length + ' items loaded from ' + filename;
-    document.getElementById('pdfIn').value = '';
-    render();
+
+    if (mode === 'qc') {
+      QC_ITEMS = items;
+      if (!document.getElementById('qcOrderNum').value)
+        document.getElementById('qcOrderNum').value = filename.replace('.pdf','');
+      document.getElementById('qcPdfIcon').textContent = '✅';
+      document.getElementById('qcPdfTitle').textContent = filename+' — loaded';
+      document.getElementById('qcJobTag').classList.add('show');
+      document.getElementById('qcJobTagTxt').textContent = items.length+' items from '+filename;
+      document.getElementById('qcPdfIn').value = '';
+      renderQC();
+    } else {
+      SOW_ITEMS = items;
+      if (!document.getElementById('sowOrderNum').value)
+        document.getElementById('sowOrderNum').value = filename.replace('.pdf','');
+      document.getElementById('sowPdfIcon').textContent = '✅';
+      document.getElementById('sowPdfTitle').textContent = filename+' — loaded';
+      document.getElementById('sowJobTag').classList.add('show');
+      document.getElementById('sowJobTagTxt').textContent = items.length+' items from '+filename;
+      document.getElementById('sowPdfIn').value = '';
+      document.getElementById('sowGenBar').style.display = 'flex';
+      renderSOW();
+    }
   })
-  .catch(function(err) {
-    hideSpinner();
-    showErr('Network error: ' + err.message);
-  });
+  .catch(function(err){ hideSpinner(mode); showErr(mode,'Network error: '+err.message); });
 }
 
-function render() {
-  var area = document.getElementById('tableArea');
-  if (!ITEMS.length) { area.innerHTML = ''; updateChips(); return; }
-  var sections = [], seen = {};
-  ITEMS.forEach(function(it) { if (!seen[it.section]) { seen[it.section]=true; sections.push(it.section); } });
-  var html = '';
-  sections.forEach(function(secName) {
-    var secItems = ITEMS.filter(function(it) { return it.section===secName; });
-    var icon = secItems[0].type==='Curtain' ? '🪟' : '🔲';
-    html += '<div class="sec-hdr">'+icon+' '+secName+'</div>';
-    html += '<table class="tbl"><thead><tr><th style="width:90px">Upload</th><th style="width:36px">#</th><th>Location</th><th>Fabric</th><th style="width:90px">W&times;D mm</th><th style="width:55px">Imgs</th><th style="width:115px">Status</th></tr></thead><tbody>';
-    secItems.forEach(function(it, idx) {
-      var tot = it.images.length;
-      var isOpen = idx===0 || (document.getElementById('qr_'+it.lineNo) && document.getElementById('qr_'+it.lineNo).classList.contains('open'));
-      html += '<tr class="'+(tot?'hi':'')+'">' +
-        '<td><button class="exp-btn '+(isOpen?'':'closed')+'" id="eb_'+it.lineNo+'" onclick="toggle('+it.lineNo+')">'+(isOpen?'&#9650; Hide':'&#128247; Upload')+'</button></td>' +
-        '<td style="font-size:10px;color:#9CA3AF;font-weight:700">L'+pad(it.lineNo)+'</td>' +
-        '<td style="font-weight:700">'+esc(it.location)+'</td>' +
-        '<td style="font-size:11px;color:#4B5563">'+esc(it.fabric)+'</td>' +
-        '<td style="font-size:11px;color:#4B5563;white-space:nowrap">'+it.width+'&times;'+it.drop+'</td>' +
-        '<td style="font-size:11px">'+(tot||'&mdash;')+'</td>' +
-        '<td>'+statusBadge(it)+'</td></tr>';
-      html += '<tr class="qr '+(isOpen?'open':'')+'" id="qr_'+it.lineNo+'"><td colspan="7"><div class="qi">' +
-        '<div class="qi-top"><div class="qi-info"><strong>'+esc(it.location)+'</strong><span class="badge b-'+(it.type==='Curtain'?'c':'b')+'">'+it.type+'</span>'+(it.fabric?'<span>'+esc(it.fabric)+'</span>':'')+(it.width?'<span>'+it.width+'&times;'+it.drop+'mm</span>':'')+'</div>' +
-        (tot?'<label class="up-mini"><input type="file" accept="image/*" multiple onchange="addImgs('+it.lineNo+',this.files)">&#128247; Add More</label>':'')+'</div>' +
-        (!tot?'<div class="up-big"><input type="file" accept="image/*" multiple onchange="addImgs('+it.lineNo+',this.files)"><div class="ic">&#128247;</div><h3>Tap to upload photos</h3><p>Choose photos of '+esc(it.location)+' from your device</p><div class="cta">Choose Photos &rarr;</div></div>':'') +
-        imgGrid(it)+'</div></td></tr>';
+// ══════════════════════════════════════════════════════════
+// QC TAB RENDERING
+// ══════════════════════════════════════════════════════════
+function renderQC() {
+  var area = document.getElementById('qcTableArea');
+  if (!QC_ITEMS.length) { area.innerHTML=''; updateQCChips(); return; }
+  var sections=[], seen={};
+  QC_ITEMS.forEach(function(it){ if(!seen[it.section]){seen[it.section]=true;sections.push(it.section);} });
+  var html='';
+  sections.forEach(function(secName){
+    var secItems = QC_ITEMS.filter(function(it){return it.section===secName;});
+    var icon = secItems[0].type==='Curtain'?'🪟':'🔲';
+    html+='<div class="sec-hdr">'+icon+' '+secName+'</div>';
+    html+='<table class="tbl"><thead><tr><th style="width:80px">Images</th><th style="width:36px">#</th><th>Location</th><th>Fabric</th><th style="width:80px">W×D</th><th style="width:110px">Status</th></tr></thead><tbody>';
+    secItems.forEach(function(it,idx){
+      var totAll=0, okAll=0;
+      QC_CATS.forEach(function(c){
+        it.images[c].forEach(function(i){ totAll++; if(i.status==='approved') okAll++; });
+      });
+      var isOpen = idx===0 || (document.getElementById('qr_'+it.lineNo)&&document.getElementById('qr_'+it.lineNo).classList.contains('open'));
+      var sb;
+      if(!totAll) sb='<span class="badge b-none">No images</span>';
+      else if(okAll===totAll) sb='<span class="badge b-ok">&#10003; '+okAll+'/'+totAll+'</span>';
+      else if(okAll>0) sb='<span class="badge b-part">&#11044; '+okAll+'/'+totAll+'</span>';
+      else sb='<span class="badge b-pend">&#9679; Pending</span>';
+
+      html+='<tr class="'+(totAll?'hi':'')+'">'
+        +'<td><button class="exp-btn '+(isOpen?'':'closed')+'" id="eb_'+it.lineNo+'" onclick="toggleQC('+it.lineNo+')">'+(isOpen?'&#9650; Hide':'&#128247; Upload')+'</button></td>'
+        +'<td style="font-size:10px;color:#9CA3AF;font-weight:700">L'+pad(it.lineNo)+'</td>'
+        +'<td style="font-weight:700">'+esc(it.location)+'</td>'
+        +'<td style="font-size:11px;color:#4B5563">'+esc(it.fabric||'')+'</td>'
+        +'<td style="font-size:11px;color:#4B5563;white-space:nowrap">'+it.width+'×'+it.drop+'</td>'
+        +'<td>'+sb+'</td>'
+        +'</tr>';
+
+      // EXPAND ROW with category upload boxes
+      html+='<tr class="qr '+(isOpen?'open':'')+'" id="qr_'+it.lineNo+'">'
+        +'<td colspan="6"><div class="qi">'
+        +'<div class="qi-top">'
+        +'<div class="qi-info"><strong>'+esc(it.location)+'</strong>'
+        +'<span class="badge b-'+(it.type==='Curtain'?'c':'b')+'">'+it.type+'</span>'
+        +(it.fabric?'<span>'+esc(it.fabric)+'</span>':'')
+        +(it.mountDetail?'<span>'+esc(it.mountDetail)+'</span>':'')
+        +(it.trackType&&it.trackType!=='none'?'<span>'+esc(it.trackType)+'</span>':'')
+        +'</div></div>'
+        // Category grid
+        +'<div class="cat-grid">'
+        +QC_CATS.map(function(cat){
+          var imgs = it.images[cat];
+          var catIcon = cat.includes('Fabric')?'🧵':cat.includes('Track')||cat.includes('Rod')?'📏':cat.includes('Blind')?'🔲':cat.includes('Bracket')?'🔩':'📷';
+          return '<div class="cat-box">'
+            +'<div class="cat-title">'+catIcon+' '+cat+'</div>'
+            +'<div class="cat-body">'
+            +'<div class="up-cat"><input type="file" accept="image/*" multiple onchange="addCatImgs('+it.lineNo+',\''+cat.replace(/'/g,"\\'") +'\',this.files)"><p>&#128247; Tap to upload</p></div>'
+            +(imgs.length?'<div class="ig">'+imgs.map(function(img){
+              var cls=img.status==='approved'?'st-ok':img.status==='rejected'?'st-rej':'st-p';
+              var lbl=img.status==='approved'?'&#10003;':'img.status==="rejected"?\'&#10005;\'':'&#9679;';
+              return '<div class="it"><img src="'+img.src+'">'
+                +'<div class="st '+cls+'">'+(img.status==='approved'?'✓OK':img.status==='rejected'?'✕':'●')+'</div>'
+                +'<div class="ac">'
+                +'<button class="ia ia-ok" onclick="setCatSt('+it.lineNo+',\''+cat.replace(/'/g,"\\'")+'\','+img.id+',\'approved\')">&#10003;</button>'
+                +'<button class="ia ia-rej" onclick="setCatSt('+it.lineNo+',\''+cat.replace(/'/g,"\\'")+'\','+img.id+',\'rejected\')">&#10005;</button>'
+                +'<button class="ia ia-del" onclick="delCatImg('+it.lineNo+',\''+cat.replace(/'/g,"\\'")+'\','+img.id+')">&#128465;</button>'
+                +'</div></div>';
+            }).join('')+'</div>':'<div class="empty-imgs">No images</div>')
+            +'</div></div>';
+        }).join('')
+        +'</div>'
+        +'</div></td></tr>';
     });
-    html += '</tbody></table>';
+    html+='</tbody></table>';
   });
-  area.innerHTML = html;
-  updateChips();
+  area.innerHTML=html;
+  updateQCChips();
 }
 
-function toggle(n) {
-  var row=document.getElementById('qr_'+n), btn=document.getElementById('eb_'+n);
+function toggleQC(n){
+  var row=document.getElementById('qr_'+n),btn=document.getElementById('eb_'+n);
   var open=row.classList.toggle('open');
   btn.classList.toggle('closed',!open);
   btn.innerHTML=open?'&#9650; Hide':'&#128247; Upload';
 }
-
-function reopen(n) {
+function reopenQC(n){
   var wasOpen=document.getElementById('qr_'+n)&&document.getElementById('qr_'+n).classList.contains('open');
-  render();
+  renderQC();
   if(wasOpen){
-    var row=document.getElementById('qr_'+n), btn=document.getElementById('eb_'+n);
-    if(row) row.classList.add('open');
+    var row=document.getElementById('qr_'+n),btn=document.getElementById('eb_'+n);
+    if(row)row.classList.add('open');
     if(btn){btn.classList.remove('closed');btn.innerHTML='&#9650; Hide';}
   }
 }
 
-function addImgs(n,files) {
-  var it=ITEMS.find(function(x){return x.lineNo===n;});
-  if(!it) return;
-  var arr=Array.from(files), idx=0;
-  function next() {
-    if(idx>=arr.length){reopen(n);return;}
-    var f=arr[idx++];
-    if(!f.type.startsWith('image/')){next();return;}
+function addCatImgs(n,cat,files){
+  var it=QC_ITEMS.find(function(x){return x.lineNo===n;}); if(!it) return;
+  var arr=Array.from(files),idx=0;
+  function next(){
+    if(idx>=arr.length){reopenQC(n);return;}
+    var f=arr[idx++]; if(!f.type.startsWith('image/')){next();return;}
     var fr=new FileReader();
-    fr.onload=function(e){it.images.push({id:Date.now()+Math.random(),src:e.target.result,status:'pending'});next();};
+    fr.onload=function(e){it.images[cat].push({id:Date.now()+Math.random(),src:e.target.result,status:'pending'});next();};
     fr.readAsDataURL(f);
   }
   next();
 }
 
-function setSt(n,id,st) {
-  var it=ITEMS.find(function(x){return x.lineNo===n;}); if(!it) return;
-  var img=it.images.find(function(i){return i.id===id;}); if(!img) return;
-  img.status=img.status===st?'pending':st; reopen(n);
+function setCatSt(n,cat,id,st){
+  var it=QC_ITEMS.find(function(x){return x.lineNo===n;}); if(!it) return;
+  var img=it.images[cat].find(function(i){return i.id===id;}); if(!img) return;
+  img.status=img.status===st?'pending':st; reopenQC(n);
+}
+function delCatImg(n,cat,id){
+  var it=QC_ITEMS.find(function(x){return x.lineNo===n;}); if(!it) return;
+  it.images[cat]=it.images[cat].filter(function(i){return i.id!==id;}); reopenQC(n);
 }
 
-function delImg(n,id) {
-  var it=ITEMS.find(function(x){return x.lineNo===n;}); if(!it) return;
-  it.images=it.images.filter(function(i){return i.id!==id;}); reopen(n);
-}
-
-function countAll() {
+function countQC(){
   var a=0,p=0,r=0,t=0;
-  ITEMS.forEach(function(it){it.images.forEach(function(i){t++;if(i.status==='approved')a++;else if(i.status==='rejected')r++;else p++;});});
+  QC_ITEMS.forEach(function(it){
+    QC_CATS.forEach(function(c){
+      it.images[c].forEach(function(i){t++;if(i.status==='approved')a++;else if(i.status==='rejected')r++;else p++;});
+    });
+  });
   return{a:a,p:p,r:r,t:t};
 }
-
-function updateChips() {
-  var c=countAll();
-  document.getElementById('chips').innerHTML=
+function updateQCChips(){
+  var c=countQC();
+  document.getElementById('qcChips').innerHTML=
     '<span class="chip c-tot">'+c.t+' Total</span>'+
     '<span class="chip c-ok">'+c.a+' Approved</span>'+
     '<span class="chip c-pend">'+c.p+' Pending</span>'+
     '<span class="chip c-rej">'+c.r+' Rejected</span>';
 }
 
-function statusBadge(it) {
-  var ok=0,rej=0,tot=it.images.length;
-  it.images.forEach(function(i){if(i.status==='approved')ok++;else if(i.status==='rejected')rej++;});
-  if(!tot) return'<span class="badge b-none">No images</span>';
-  if(ok===tot) return'<span class="badge b-ok">&#10003; '+ok+'/'+tot+' Pass</span>';
-  if(ok>0) return'<span class="badge b-part">&#11044; '+ok+'/'+tot+' Pass</span>';
-  if(rej>0) return'<span class="badge b-rej">&#10005; Rejected</span>';
-  return'<span class="badge b-pend">&#9679; Pending</span>';
+// ══════════════════════════════════════════════════════════
+// SOW TAB RENDERING
+// ══════════════════════════════════════════════════════════
+function getLiningDesc(it) {
+  if (!it.lining || it.lining==='No' || it.lining==='no') {
+    return {text:'No Lining — Light will pass through', badge:'sow-warn', note:''};
+  }
+  var lt = (it.liningType||'').toLowerCase();
+  if (lt.includes('black')) return {text:'Blackout Lining — Full light block', badge:'sow-ok', note:''};
+  if (lt.includes('dimout')||lt.includes('dim')) return {text:'Dimout Lining — 80–90% light reduction', badge:'sow-info', note:''};
+  return {text:'Regular Lining — Light filtering, no blackout', badge:'sow-warn', note:''};
 }
 
-function imgGrid(it) {
-  if(!it.images.length) return'<div class="empty-imgs">No images yet</div>';
-  var html='<div class="ig">';
-  it.images.forEach(function(img){
-    var cls=img.status==='approved'?'st-ok':img.status==='rejected'?'st-rej':'st-p';
-    var lbl=img.status==='approved'?'&#10003;Pass':img.status==='rejected'?'&#10005;Fail':'&#9679;Wait';
-    html+='<div class="it"><img src="'+img.src+'"><div class="st '+cls+'">'+lbl+'</div><div class="ac">'+
-      '<button class="ia ia-ok" onclick="setSt('+it.lineNo+','+img.id+',\'approved\')">&#10003;</button>'+
-      '<button class="ia ia-rej" onclick="setSt('+it.lineNo+','+img.id+',\'rejected\')">&#10005;</button>'+
-      '<button class="ia ia-del" onclick="delImg('+it.lineNo+','+img.id+')">&#128465;</button>'+
-      '</div></div>';
+function getMountNote(it) {
+  var mount = (it.mountDetail||it.mountType||'').toLowerCase();
+  if (mount.includes('in') || mount.includes('ceiling')) {
+    return 'Inside / Ceiling mount — Light may pass from edges (0.5" gap required for smooth operation)';
+  }
+  if (mount.includes('wall')) return 'Wall mount — '+mount;
+  return mount;
+}
+
+function renderSOW() {
+  var cards = document.getElementById('sowCards');
+  if (!SOW_ITEMS.length) { cards.innerHTML=''; return; }
+
+  // Group by location (room)
+  var rooms={}, roomOrder=[];
+  SOW_ITEMS.forEach(function(it){
+    var loc = it.location.replace(/\s+w\d+.*$/i,'').replace(/\s+(main|sheer|blind)$/i,'').trim();
+    if(!rooms[loc]){rooms[loc]=[];roomOrder.push(loc);}
+    rooms[loc].push(it);
   });
-  return html+'</div>';
+
+  var html='';
+  roomOrder.forEach(function(roomName){
+    var items=rooms[roomName];
+    html+='<div class="sow-card">';
+    html+='<div class="sow-hdr"><h3>'+esc(roomName)+'</h3><span>'+items.length+' item'+(items.length>1?'s':'')+'</span></div>';
+    html+='<div class="sow-body">';
+
+    items.forEach(function(it,idx){
+      if(idx>0) html+='<div class="sow-divider"></div>';
+
+      // Window line
+      html+='<div class="sow-row"><span class="sow-label">Window</span><span class="sow-val"><b>'+esc(it.location)+'</b> &nbsp; '+it.width+'mm wide × '+it.drop+'mm drop</span></div>';
+
+      // Product type
+      html+='<div class="sow-row"><span class="sow-label">Product</span><span class="sow-val">'
+        +'<span class="sow-badge sow-info">'+esc(it.section)+'</span>'
+        +(it.headingType?' &nbsp;<span style="font-size:11px;color:#4B5563">'+esc(it.headingType)+'</span>':'')
+        +'</span></div>';
+
+      // Fabric
+      html+='<div class="sow-row"><span class="sow-label">Fabric</span><span class="sow-val">'
+        +'<b>'+esc(it.fabric||'')+'</b>'
+        +(it.fabricCode?' &nbsp;<span style="font-size:10px;color:#9CA3AF">'+esc(it.fabricCode)+'</span>':'')
+        +(it.fabricVendor?' &nbsp;via '+esc(it.fabricVendor):'')
+        +'</span>'
+        // Fabric image upload
+        +'<label class="fab-upload" style="margin-left:8px">'
+        +'<input type="file" accept="image/*" onchange="addFabricImg('+it.lineNo+',this.files)">'
+        +(it.fabricImg?'<img class="fab-thumb" src="'+it.fabricImg+'">':'<span>📸 Add fabric image</span>')
+        +'</label></div>';
+
+      // Track / Rod
+      if(it.trackType&&it.trackType!=='none'&&it.trackType!=='No Rods'){
+        html+='<div class="sow-row"><span class="sow-label">Track / Rod</span><span class="sow-val">'
+          +esc(it.trackType)
+          +(it.controlSystem?' — '+esc(it.controlSystem):'')
+          +(it.trackVendor?' via '+esc(it.trackVendor):'')
+          +'</span></div>';
+      }
+
+      // Mount
+      var mountStr = it.mountDetail||it.mountType||'';
+      if(mountStr){
+        html+='<div class="sow-row"><span class="sow-label">Installation</span><span class="sow-val">'
+          +'<span class="sow-badge sow-info">'+esc(mountStr)+'</span>'
+          +'</span></div>';
+        var mNote = getMountNote(it);
+        if(mNote.includes('edge')){
+          html+='<div class="sow-note">&#9888; '+esc(mNote)+'</div>';
+        }
+      }
+
+      // Lining
+      var lin = getLiningDesc(it);
+      html+='<div class="sow-row"><span class="sow-label">Lining</span><span class="sow-val">'
+        +'<span class="sow-badge '+lin.badge+'">'+lin.text+'</span>'
+        +(it.liningFabric&&it.liningFabric!=='none'?' &nbsp;<span style="font-size:10px;color:#9CA3AF">'+esc(it.liningFabric)+'</span>':'')
+        +'</span></div>';
+
+      // Stack / Panels
+      if(it.stack){
+        html+='<div class="sow-row"><span class="sow-label">Stack / Panels</span><span class="sow-val">'+esc(it.stack)+(it.panels?' — '+it.panels+' panels':'')+'</span></div>';
+      }
+
+      // Install surface
+      if(it.installSurface&&it.installSurface!=='Normal'){
+        html+='<div class="sow-note">&#9432; Special surface: '+esc(it.installSurface)+' — confirm wall plugs and fixing method with installer.</div>';
+      }
+    });
+
+    html+='</div></div>';
+  });
+  cards.innerHTML=html;
 }
 
-function pad(n){return String(n).length<2?'0'+n:''+n;}
-function esc(s){return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
-function showErr(m){var el=document.getElementById('errTag');el.textContent='⚠ '+m;el.classList.add('show');}
-function hideErr(){document.getElementById('errTag').classList.remove('show');}
-function showWarn(m){var el=document.getElementById('warnTag');el.textContent=m;el.classList.add('show');}
-function hideWarn(){document.getElementById('warnTag').classList.remove('show');}
-function showSpinner(t,s){document.getElementById('spinner').classList.add('show');document.getElementById('spTxt').textContent=t;document.getElementById('spSub').textContent=s;}
-function setSpinSub(s){document.getElementById('spSub').textContent=s;}
-function hideSpinner(){document.getElementById('spinner').classList.remove('show');}
+function addFabricImg(lineNo, files){
+  var it=SOW_ITEMS.find(function(x){return x.lineNo===lineNo;}); if(!it) return;
+  var f=files[0]; if(!f||!f.type.startsWith('image/')) return;
+  var fr=new FileReader();
+  fr.onload=function(e){it.fabricImg=e.target.result; renderSOW();};
+  fr.readAsDataURL(f);
+}
 
-function genPDF() {
-  var order=document.getElementById('orderNum').value.trim()||'N/A';
-  var insp=document.getElementById('inspector').value.trim()||'Inspector';
-  var c=countAll(); hideWarn();
-  if(c.a===0){showWarn('⚠ No approved images yet — upload photos and tap the ✓ green button first');return;}
-  var btn=document.getElementById('genBtn');
-  btn.disabled=true; btn.textContent='Generating...';
-  try {
+// ══════════════════════════════════════════════════════════
+// QC PDF GENERATION
+// ══════════════════════════════════════════════════════════
+function genQCPDF(){
+  var order=document.getElementById('qcOrderNum').value.trim()||'N/A';
+  var insp=document.getElementById('qcInspector').value.trim()||'Inspector';
+  var c=countQC(); hideWarn('qc');
+  if(c.a===0){showWarn('qc','&#9888; No approved images yet — upload photos and tap &#10003; to approve');return;}
+  var btn=document.getElementById('qcGenBtn'); btn.disabled=true; btn.textContent='Generating...';
+  try{
+    var jsPDF=window.jspdf.jsPDF;
+    var doc=new jsPDF({orientation:'portrait',unit:'mm',format:'a4'});
+    var W=210,H=297,M=12,CW=W-M*2;
+    var NAVY=[30,34,53],RED=[200,49,74],WW=[255,255,255],TXT=[17,24,39],GRY=[100,100,100];
+
+    function hdr(t,s){
+      doc.setFillColor(NAVY[0],NAVY[1],NAVY[2]);doc.rect(0,0,W,18,'F');
+      doc.setFillColor(RED[0],RED[1],RED[2]);doc.rect(0,0,4,18,'F');
+      doc.setTextColor(WW[0],WW[1],WW[2]);doc.setFont('helvetica','bold');doc.setFontSize(11);doc.text('HILLARYS',M+2,8);
+      doc.setFont('helvetica','normal');doc.setFontSize(6);doc.text('CURTAINS | BLINDS',M+2,14);
+      doc.setFillColor(RED[0],RED[1],RED[2]);doc.rect(M+50,3,8,6,'F');
+      doc.setTextColor(WW[0],WW[1],WW[2]);doc.setFontSize(5);doc.text('QC',M+51.5,7.5);
+      if(s){doc.setTextColor(180,195,210);doc.setFontSize(6.5);doc.text(s,W-M,8,{align:'right'});doc.text(t,W-M,14,{align:'right'});}
+    }
+
+    // COVER
+    doc.setFillColor(250,243,232);doc.rect(0,0,W,H,'F');
+    hdr('','');
+    doc.setFillColor(NAVY[0],NAVY[1],NAVY[2]);doc.rect(0,0,W,18,'F');
+    doc.setFillColor(RED[0],RED[1],RED[2]);doc.rect(0,0,4,18,'F');
+    doc.setTextColor(WW[0],WW[1],WW[2]);doc.setFont('helvetica','bold');doc.setFontSize(11);doc.text('HILLARYS',M+2,8);
+    doc.setFont('helvetica','normal');doc.setFontSize(6);doc.text('CURTAINS | BLINDS',M+2,14);
+    doc.setFillColor(RED[0],RED[1],RED[2]);doc.rect(M+50,3,8,6,'F');
+    doc.setTextColor(WW[0],WW[1],WW[2]);doc.setFontSize(5);doc.text('QC',M+51.5,7.5);
+
+    doc.setTextColor(TXT[0],TXT[1],TXT[2]);doc.setFont('helvetica','bold');doc.setFontSize(13);
+    doc.text('Quality Control Inspection Report',M,30);
+    doc.setFont('helvetica','normal');doc.setFontSize(9);doc.setTextColor(GRY[0],GRY[1],GRY[2]);
+    doc.text('Order:',M,40);doc.text('Inspector:',M+60,40);doc.text('Date:',M+120,40);
+    doc.setTextColor(TXT[0],TXT[1],TXT[2]);doc.setFont('helvetica','bold');
+    doc.text(order,M,47);doc.text(insp,M+60,47);
+    doc.text(new Date().toLocaleDateString('en-IN',{day:'2-digit',month:'short',year:'numeric'}),M+120,47);
+    doc.setDrawColor(220,220,220);doc.setLineWidth(0.3);doc.line(M,52,W-M,52);
+
+    // Summary
+    doc.setFont('helvetica','bold');doc.setFontSize(8);doc.setTextColor(GRY[0],GRY[1],GRY[2]);
+    doc.text('APPROVED ITEMS',M,59);
+    var cy=66,lastSec=null;
+    var apprItems=QC_ITEMS.filter(function(it){
+      return QC_CATS.some(function(c){return it.images[c].some(function(i){return i.status==='approved';});});
+    });
+    apprItems.forEach(function(it){
+      if(it.section!==lastSec){
+        doc.setFont('helvetica','bold');doc.setFontSize(7.5);doc.setTextColor(NAVY[0],NAVY[1],NAVY[2]);
+        doc.text(it.section.toUpperCase(),M,cy);cy+=5;lastSec=it.section;
+      }
+      var ac=QC_CATS.reduce(function(s,c){return s+it.images[c].filter(function(i){return i.status==='approved';}).length;},0);
+      doc.setFont('helvetica','normal');doc.setFontSize(8.5);doc.setTextColor(TXT[0],TXT[1],TXT[2]);
+      doc.text('L'+pad(it.lineNo)+'  '+it.location,M+4,cy);
+      doc.setTextColor(GRY[0],GRY[1],GRY[2]);doc.setFontSize(7.5);doc.text(it.fabric||'',M+75,cy);
+      doc.setTextColor(5,150,105);doc.setFont('helvetica','bold');doc.setFontSize(7.5);
+      doc.text(ac+' approved',W-M,cy,{align:'right'});
+      cy+=6;
+    });
+    doc.setFont('helvetica','normal');doc.setFontSize(6.5);doc.setTextColor(GRY[0],GRY[1],GRY[2]);
+    doc.text('hillarys.co.in  Bangalore  Confidential',W/2,H-8,{align:'center'});
+
+    // IMAGE PAGES — 2 items per page grouped by categories
+    var ROOMS_PER_PAGE=2;
+    for(var p=0;p<apprItems.length;p+=ROOMS_PER_PAGE){
+      var pageItems=apprItems.slice(p,p+ROOMS_PER_PAGE);
+      doc.addPage();
+      doc.setFillColor(250,243,232);doc.rect(0,0,W,H,'F');
+      // header
+      doc.setFillColor(NAVY[0],NAVY[1],NAVY[2]);doc.rect(0,0,W,18,'F');
+      doc.setFillColor(RED[0],RED[1],RED[2]);doc.rect(0,0,4,18,'F');
+      doc.setTextColor(WW[0],WW[1],WW[2]);doc.setFont('helvetica','bold');doc.setFontSize(11);doc.text('HILLARYS',M+2,8);
+      doc.setFont('helvetica','normal');doc.setFontSize(6);doc.text('CURTAINS | BLINDS',M+2,14);
+      doc.setFillColor(RED[0],RED[1],RED[2]);doc.rect(M+50,3,8,6,'F');
+      doc.setTextColor(WW[0],WW[1],WW[2]);doc.setFontSize(5);doc.text('QC',M+51.5,7.5);
+      doc.setTextColor(180,195,210);doc.setFontSize(6.5);
+      doc.text('Order: '+order,W-M,8,{align:'right'});
+      doc.text(insp,W-M,14,{align:'right'});
+      doc.setTextColor(GRY[0],GRY[1],GRY[2]);doc.setFontSize(6);
+      doc.text('hillarys.co.in  Bangalore  Confidential',W/2,H-4,{align:'center'});
+
+      var slotH=(H-18-8)/ROOMS_PER_PAGE;
+      pageItems.forEach(function(it,slotIdx){
+        var slotY=18+4+(slotIdx*slotH);
+        // Room name
+        doc.setFont('helvetica','bold');doc.setFontSize(10);doc.setTextColor(TXT[0],TXT[1],TXT[2]);
+        doc.text(it.location,M,slotY+7);
+        doc.setFont('helvetica','normal');doc.setFontSize(7);doc.setTextColor(GRY[0],GRY[1],GRY[2]);
+        doc.text(it.section+(it.fabric?' · '+it.fabric:'')+(it.mountDetail?' · '+it.mountDetail:''),M,slotY+12);
+        // Approved badge
+        doc.setFillColor(5,150,105);doc.rect(W-M-22,slotY+3,22,7,'F');
+        doc.setTextColor(WW[0],WW[1],WW[2]);doc.setFont('helvetica','bold');doc.setFontSize(6.5);
+        doc.text('QC Approved',W-M-11,slotY+8,{align:'center'});
+        doc.setDrawColor(220,220,220);doc.setLineWidth(0.2);doc.line(M,slotY+15,W-M,slotY+15);
+
+        // Images - all approved across all categories, labeled
+        var allApproved=[];
+        QC_CATS.forEach(function(cat){
+          it.images[cat].filter(function(i){return i.status==='approved';}).forEach(function(i){
+            allApproved.push({src:i.src,cat:cat});
+          });
+        });
+
+        var iw=(CW-8)/3, ih=iw*0.72;
+        var maxRows=Math.floor((slotH-18)/( ih+10));
+        var ix=M,iy=slotY+17,col=0;
+        allApproved.forEach(function(item){
+          if(iy+ih+8>slotY+slotH-2) return;
+          try{
+            var fmt=item.src.indexOf('/png')>-1?'PNG':item.src.indexOf('/webp')>-1?'WEBP':'JPEG';
+            doc.addImage(item.src,fmt,ix,iy,iw,ih,undefined,'MEDIUM');
+          }catch(e){doc.setFillColor(240,240,240);doc.rect(ix,iy,iw,ih,'F');}
+          // Category label under image
+          doc.setFillColor(30,34,53);doc.rect(ix,iy+ih,iw,5,'F');
+          doc.setTextColor(WW[0],WW[1],WW[2]);doc.setFont('helvetica','normal');doc.setFontSize(4.5);
+          var shortCat=item.cat.split('/')[0].trim().substring(0,18);
+          doc.text(shortCat,ix+iw/2,iy+ih+3.5,{align:'center'});
+          col++;
+          if(col>=3){col=0;ix=M;iy+=ih+7;}else{ix+=iw+4;}
+        });
+
+        if(slotIdx<pageItems.length-1){
+          doc.setDrawColor(200,200,200);doc.setLineWidth(0.4);
+          doc.line(M,18+4+((slotIdx+1)*slotH)-2,W-M,18+4+((slotIdx+1)*slotH)-2);
+        }
+      });
+    }
+
+    doc.save('Hillarys_QC_'+order.replace(/[^a-z0-9]/gi,'_')+'_'+new Date().toISOString().slice(0,10)+'.pdf');
+  }catch(err){console.error(err);alert('PDF Error: '+err.message);}
+  btn.disabled=false;btn.textContent='↓ Download QC Report';
+}
+
+// ══════════════════════════════════════════════════════════
+// SOW PDF GENERATION
+// ══════════════════════════════════════════════════════════
+function genSOWPDF(){
+  var order=document.getElementById('sowOrderNum').value.trim()||'N/A';
+  var prep=document.getElementById('sowPrepared').value.trim()||'Hillarys';
+  var btn=document.getElementById('sowGenBtn'); btn.disabled=true; btn.textContent='Generating...';
+  try{
     var jsPDF=window.jspdf.jsPDF;
     var doc=new jsPDF({orientation:'portrait',unit:'mm',format:'a4'});
     var W=210,H=297,M=14,CW=W-M*2;
-    var NAVY=[30,34,53],RED=[200,49,74],CREAM=[250,243,232],SAND=[242,235,217];
-    var WW=[255,255,255],TXT=[17,24,39],LGR=[156,163,175],GRN=[5,150,105];
+    var NAVY=[30,34,53],RED=[200,49,74],WW=[255,255,255],TXT=[17,24,39],GRY=[100,100,100],GRN=[5,150,105],AMB=[217,119,6];
 
-    function hdr(title,sub) {
-      doc.setFillColor(NAVY[0],NAVY[1],NAVY[2]);doc.rect(0,0,W,34,'F');
-      doc.setFillColor(RED[0],RED[1],RED[2]);doc.rect(0,0,5,34,'F');
-      doc.setTextColor(WW[0],WW[1],WW[2]);doc.setFont('helvetica','bold');doc.setFontSize(17);doc.text('HILLARYS',M+3,15);
-      doc.setTextColor(190,205,220);doc.setFont('helvetica','normal');doc.setFontSize(7);doc.text('CURTAINS | BLINDS',M+4,22);
-      doc.setFillColor(RED[0],RED[1],RED[2]);doc.rect(M+63,8,10,7,'F');
-      doc.setTextColor(WW[0],WW[1],WW[2]);doc.setFontSize(6.5);doc.text('QC',M+64.5,13.5);
-      doc.setTextColor(WW[0],WW[1],WW[2]);doc.setFont('helvetica','bold');doc.setFontSize(11);doc.text(title,M+3,30);
-      if(sub){doc.setTextColor(180,195,210);doc.setFont('helvetica','normal');doc.setFontSize(7);doc.text(sub,W-M,30,{align:'right'});}
+    function hdr(){
+      doc.setFillColor(NAVY[0],NAVY[1],NAVY[2]);doc.rect(0,0,W,18,'F');
+      doc.setFillColor(RED[0],RED[1],RED[2]);doc.rect(0,0,4,18,'F');
+      doc.setTextColor(WW[0],WW[1],WW[2]);doc.setFont('helvetica','bold');doc.setFontSize(11);doc.text('HILLARYS',M+2,8);
+      doc.setFont('helvetica','normal');doc.setFontSize(6);doc.text('CURTAINS | BLINDS',M+2,14);
+      doc.setTextColor(180,195,210);doc.setFontSize(6.5);
+      doc.text('Order: '+order,W-M,8,{align:'right'});
+      doc.text('SOW Document',W-M,14,{align:'right'});
     }
 
-    doc.setFillColor(CREAM[0],CREAM[1],CREAM[2]);doc.rect(0,0,W,H,'F');
-    hdr('QUALITY CONTROL INSPECTION REPORT','Order: '+order);
-    doc.setFillColor(WW[0],WW[1],WW[2]);doc.rect(M,42,CW,24,'F');
-    doc.setDrawColor(229,231,235);doc.setLineWidth(.3);doc.rect(M,42,CW,24,'S');
-    doc.setFillColor(RED[0],RED[1],RED[2]);doc.rect(M,42,3,24,'F');
-    var dateStr=new Date().toLocaleDateString('en-IN',{day:'2-digit',month:'short',year:'numeric'});
-    [[M+7,'ORDER',order],[M+72,'INSPECTOR',insp],[M+148,'DATE',dateStr]].forEach(function(r){
-      doc.setTextColor(LGR[0],LGR[1],LGR[2]);doc.setFont('helvetica','bold');doc.setFontSize(6.5);doc.text(r[1],r[0],51);
-      doc.setTextColor(TXT[0],TXT[1],TXT[2]);doc.setFont('helvetica','bold');doc.setFontSize(11);doc.text(String(r[2]),r[0],61);
+    // COVER
+    doc.setFillColor(250,243,232);doc.rect(0,0,W,H,'F');
+    hdr();
+    doc.setTextColor(TXT[0],TXT[1],TXT[2]);doc.setFont('helvetica','bold');doc.setFontSize(14);
+    doc.text('Scope of Work',M,32);
+    doc.setFont('helvetica','normal');doc.setFontSize(9);doc.setTextColor(GRY[0],GRY[1],GRY[2]);
+    doc.text('Order:',M,42);doc.text('Prepared By:',M+60,42);doc.text('Date:',M+130,42);
+    doc.setTextColor(TXT[0],TXT[1],TXT[2]);doc.setFont('helvetica','bold');
+    doc.text(order,M,49);doc.text(prep,M+60,49);
+    doc.text(new Date().toLocaleDateString('en-IN',{day:'2-digit',month:'short',year:'numeric'}),M+130,49);
+    doc.setDrawColor(220,220,220);doc.setLineWidth(0.3);doc.line(M,54,W-M,54);
+
+    // Items list
+    doc.setFont('helvetica','bold');doc.setFontSize(8);doc.setTextColor(GRY[0],GRY[1],GRY[2]);
+    doc.text('SUMMARY OF ITEMS',M,61);
+    var cy=68,lastRoom='';
+    var rooms={},roomOrder=[];
+    SOW_ITEMS.forEach(function(it){
+      var loc=it.location.replace(/\s+w\d+.*$/i,'').replace(/\s+(main|sheer|blind)$/i,'').trim();
+      if(!rooms[loc]){rooms[loc]=[];roomOrder.push(loc);}
+      rooms[loc].push(it);
     });
 
-    var lastSec=null,cy=80;
-    var appr=ITEMS.filter(function(it){return it.images.some(function(i){return i.status==='approved';});});
-    doc.setTextColor(NAVY[0],NAVY[1],NAVY[2]);doc.setFont('helvetica','bold');doc.setFontSize(8);
-    doc.text('APPROVED ITEMS SUMMARY',M,cy);
-    doc.setDrawColor(229,231,235);doc.setLineWidth(.3);doc.line(M,cy+2,W-M,cy+2);cy+=8;
+    roomOrder.forEach(function(roomName){
+      var items=rooms[roomName];
+      // Room header
+      if(cy>H-18){doc.addPage();doc.setFillColor(250,243,232);doc.rect(0,0,W,H,'F');hdr();cy=26;}
+      doc.setFillColor(NAVY[0],NAVY[1],NAVY[2]);doc.rect(M,cy-3,CW,8,'F');
+      doc.setTextColor(WW[0],WW[1],WW[2]);doc.setFont('helvetica','bold');doc.setFontSize(9);
+      doc.text(roomName.toUpperCase(),M+3,cy+2);
+      cy+=11;
 
-    appr.forEach(function(it){
-      if(it.section!==lastSec){
-        if(cy>H-18){doc.addPage();doc.setFillColor(CREAM[0],CREAM[1],CREAM[2]);doc.rect(0,0,W,H,'F');cy=18;}
-        doc.setFillColor(NAVY[0],NAVY[1],NAVY[2]);doc.rect(M,cy-2,CW,7,'F');
-        doc.setTextColor(WW[0],WW[1],WW[2]);doc.setFont('helvetica','bold');doc.setFontSize(7);
-        doc.text(it.section.toUpperCase(),M+3,cy+3);cy+=9;lastSec=it.section;
-      }
-      if(cy>H-14){doc.addPage();doc.setFillColor(CREAM[0],CREAM[1],CREAM[2]);doc.rect(0,0,W,H,'F');cy=18;}
-      var ac=it.images.filter(function(i){return i.status==='approved';}).length;
-      doc.setFillColor(SAND[0],SAND[1],SAND[2]);doc.rect(M,cy-2.5,CW,7,'F');
-      doc.setTextColor(TXT[0],TXT[1],TXT[2]);doc.setFont('helvetica','bold');doc.setFontSize(8.5);
-      doc.text('L'+pad(it.lineNo)+'  '+it.location,M+3,cy+2);
-      doc.setTextColor(LGR[0],LGR[1],LGR[2]);doc.setFont('helvetica','normal');doc.setFontSize(7);doc.text(it.fabric,M+80,cy+2);
-      doc.setFillColor(GRN[0],GRN[1],GRN[2]);doc.rect(W-M-22,cy-2,22,7,'F');
-      doc.setTextColor(WW[0],WW[1],WW[2]);doc.setFont('helvetica','bold');doc.setFontSize(6.5);
-      doc.text(ac+' img'+(ac>1?'s':''),W-M-11,cy+2.5,{align:'center'});cy+=9;
+      items.forEach(function(it){
+        if(cy>H-40){doc.addPage();doc.setFillColor(250,243,232);doc.rect(0,0,W,H,'F');hdr();cy=26;}
+
+        // Location + dimensions
+        doc.setFont('helvetica','bold');doc.setFontSize(8.5);doc.setTextColor(TXT[0],TXT[1],TXT[2]);
+        doc.text(it.location,M+2,cy);
+        doc.setFont('helvetica','normal');doc.setFontSize(7);doc.setTextColor(GRY[0],GRY[1],GRY[2]);
+        doc.text(it.width+'mm × '+it.drop+'mm',W-M,cy,{align:'right'});
+        cy+=5;
+
+        // Product
+        doc.setFont('helvetica','normal');doc.setFontSize(7.5);doc.setTextColor(TXT[0],TXT[1],TXT[2]);
+        doc.text('Product:',M+2,cy);
+        doc.setFont('helvetica','bold');
+        doc.text(it.section+(it.headingType?' — '+it.headingType:''),M+25,cy);
+        cy+=5;
+
+        // Fabric
+        doc.setFont('helvetica','normal');doc.setFontSize(7.5);doc.setTextColor(TXT[0],TXT[1],TXT[2]);
+        doc.text('Fabric:',M+2,cy);
+        doc.setFont('helvetica','bold');doc.setTextColor(TXT[0],TXT[1],TXT[2]);
+        doc.text((it.fabric||'')+' ('+( it.fabricCode||'')+') via '+(it.fabricVendor||''),M+25,cy);
+        cy+=5;
+
+        // Fabric image if available
+        if(it.fabricImg){
+          try{
+            var fmt=it.fabricImg.indexOf('/png')>-1?'PNG':'JPEG';
+            doc.addImage(it.fabricImg,fmt,M+2,cy,20,20,undefined,'MEDIUM');
+          }catch(e){}
+          cy+=23;
+        }
+
+        // Track
+        if(it.trackType&&it.trackType!=='none'&&it.trackType!=='No Rods'){
+          doc.setFont('helvetica','normal');doc.setFontSize(7.5);doc.setTextColor(TXT[0],TXT[1],TXT[2]);
+          doc.text('Track / Rod:',M+2,cy);
+          doc.setFont('helvetica','bold');
+          doc.text((it.trackType||'')+(it.controlSystem?' — '+it.controlSystem:''),M+25,cy);
+          cy+=5;
+        }
+
+        // Mount
+        var mountStr=it.mountDetail||it.mountType||'';
+        if(mountStr){
+          doc.setFont('helvetica','normal');doc.setFontSize(7.5);doc.setTextColor(TXT[0],TXT[1],TXT[2]);
+          doc.text('Installation:',M+2,cy);
+          doc.setFont('helvetica','bold');doc.text(mountStr,M+25,cy);
+          cy+=5;
+          // Edge note
+          if(mountStr.toLowerCase().includes('ceiling')||mountStr.toLowerCase().includes('in')){
+            doc.setFillColor(254,243,199);doc.rect(M+2,cy-2,CW-4,7,'F');
+            doc.setTextColor(AMB[0],AMB[1],AMB[2]);doc.setFont('helvetica','normal');doc.setFontSize(6.5);
+            doc.text('⚠ Inside/Ceiling mount — Light will pass from edges (0.5" gap for smooth operation)',M+4,cy+3);
+            cy+=9;
+          }
+        }
+
+        // Lining
+        var lin=getLiningDesc(it);
+        doc.setFont('helvetica','normal');doc.setFontSize(7.5);doc.setTextColor(TXT[0],TXT[1],TXT[2]);
+        doc.text('Lining:',M+2,cy);
+        doc.setFont('helvetica','bold');
+        if(lin.badge==='sow-ok') doc.setTextColor(GRN[0],GRN[1],GRN[2]);
+        else if(lin.badge==='sow-info') doc.setTextColor(37,99,235);
+        else doc.setTextColor(AMB[0],AMB[1],AMB[2]);
+        doc.text(lin.text,M+25,cy);
+        cy+=5;
+
+        // Stack
+        if(it.stack){
+          doc.setFont('helvetica','normal');doc.setFontSize(7.5);doc.setTextColor(TXT[0],TXT[1],TXT[2]);
+          doc.text('Stack / Panels:',M+2,cy);
+          doc.setFont('helvetica','bold');doc.setTextColor(TXT[0],TXT[1],TXT[2]);
+          doc.text(it.stack+(it.panels?' — '+it.panels+' panels':''),M+25,cy);
+          cy+=5;
+        }
+
+        // Special surface
+        if(it.installSurface&&it.installSurface!=='Normal'){
+          doc.setFillColor(254,243,199);doc.rect(M+2,cy-2,CW-4,7,'F');
+          doc.setTextColor(AMB[0],AMB[1],AMB[2]);doc.setFont('helvetica','normal');doc.setFontSize(6.5);
+          doc.text('ℹ Surface: '+it.installSurface+' — confirm fixings with installer',M+4,cy+3);
+          cy+=9;
+        }
+
+        cy+=3;
+        doc.setDrawColor(230,230,230);doc.setLineWidth(0.2);doc.line(M,cy,W-M,cy);
+        cy+=4;
+      });
     });
-    doc.setTextColor(LGR[0],LGR[1],LGR[2]);doc.setFont('helvetica','normal');doc.setFontSize(6.5);
+
+    doc.setFont('helvetica','normal');doc.setFontSize(6.5);doc.setTextColor(GRY[0],GRY[1],GRY[2]);
     doc.text('hillarys.co.in  Bangalore, India  Confidential',W/2,H-8,{align:'center'});
 
-    ITEMS.forEach(function(it){
-      var apprImgs=it.images.filter(function(i){return i.status==='approved';});
-      if(!apprImgs.length) return;
-      doc.addPage();doc.setFillColor(CREAM[0],CREAM[1],CREAM[2]);doc.rect(0,0,W,H,'F');
-      hdr(it.location,'Order: '+order);
-      doc.setFillColor(WW[0],WW[1],WW[2]);doc.rect(M,36,CW,9,'F');
-      doc.setDrawColor(229,231,235);doc.setLineWidth(.25);doc.rect(M,36,CW,9,'S');
-      doc.setTextColor(LGR[0],LGR[1],LGR[2]);doc.setFont('helvetica','normal');doc.setFontSize(7);
-      doc.text('L'+pad(it.lineNo)+' - '+it.section+' - '+it.fabric+' - '+it.width+'x'+it.drop+'mm',M+3,42);
-      doc.setFillColor(GRN[0],GRN[1],GRN[2]);doc.rect(W-M-28,36,28,9,'F');
-      doc.setTextColor(WW[0],WW[1],WW[2]);doc.setFont('helvetica','bold');doc.setFontSize(6.5);
-      doc.text(apprImgs.length+' approved',W-M-14,41.5,{align:'center'});
-      var iw=(CW-7)/2,ih=iw*0.67,ix=M,iy=48,col=0;
-      apprImgs.forEach(function(img){
-        if(iy+ih+10>H-10){doc.addPage();doc.setFillColor(CREAM[0],CREAM[1],CREAM[2]);doc.rect(0,0,W,H,'F');hdr(it.location+' (cont.)','Order: '+order);iy=38;ix=M;col=0;}
-        doc.setFillColor(WW[0],WW[1],WW[2]);doc.setDrawColor(229,231,235);doc.setLineWidth(.25);doc.rect(ix,iy,iw,ih+9,'FD');
-        try{var fmt=img.src.indexOf('/png')>-1?'PNG':img.src.indexOf('/webp')>-1?'WEBP':'JPEG';doc.addImage(img.src,fmt,ix,iy,iw,ih,undefined,'MEDIUM');}
-        catch(e){doc.setFillColor(SAND[0],SAND[1],SAND[2]);doc.rect(ix,iy,iw,ih,'F');}
-        doc.setFillColor(WW[0],WW[1],WW[2]);doc.rect(ix,iy+ih,iw,9,'F');
-        doc.setFillColor(GRN[0],GRN[1],GRN[2]);doc.rect(ix,iy+ih,18,9,'F');
-        doc.setTextColor(WW[0],WW[1],WW[2]);doc.setFont('helvetica','bold');doc.setFontSize(6);doc.text('PASS',ix+9,iy+ih+6,{align:'center'});
-        col++;if(col===2){col=0;ix=M;iy+=ih+13;}else{ix=M+iw+7;}
-      });
-      doc.setTextColor(LGR[0],LGR[1],LGR[2]);doc.setFont('helvetica','normal');doc.setFontSize(6.5);
-      doc.text(it.location+' - '+order+' - '+insp,M,H-7);
-      doc.text(new Date().toLocaleDateString('en-IN'),W-M,H-7,{align:'right'});
-    });
-
-    var fname='Hillarys_QC_'+order.replace(/[^a-z0-9]/gi,'_')+'_'+new Date().toISOString().slice(0,10)+'.pdf';
-    doc.save(fname);
-  } catch(err) {
-    console.error('PDF ERROR:',err);
-    alert('PDF Error: '+err.message);
-  }
-  btn.disabled=false; btn.textContent='↓ Download PDF Report';
+    doc.save('Hillarys_SOW_'+order.replace(/[^a-z0-9]/gi,'_')+'_'+new Date().toISOString().slice(0,10)+'.pdf');
+  }catch(err){console.error(err);alert('SOW PDF Error: '+err.message);}
+  btn.disabled=false;btn.textContent='↓ Download SOW';
 }
 
-render(); updateChips();
+// ── UTILS ─────────────────────────────────────────────────
+function pad(n){return String(n).length<2?'0'+n:''+n;}
+function esc(s){return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
+function getLiningDesc(it){
+  if(!it.lining||it.lining==='No'||it.lining==='no') return{text:'No Lining — Light will pass through',badge:'sow-warn'};
+  var lt=(it.liningType||'').toLowerCase();
+  if(lt.includes('black')) return{text:'Blackout Lining — Full light block',badge:'sow-ok'};
+  if(lt.includes('dimout')||lt.includes('dim')) return{text:'Dimout Lining — 80-90% light reduction',badge:'sow-info'};
+  return{text:'Regular Lining — Light filtering',badge:'sow-warn'};
+}
+function getMountNote(it){
+  var m=(it.mountDetail||it.mountType||'').toLowerCase();
+  if(m.includes('ceiling')||m==='in') return 'Inside/Ceiling mount — Light may pass from edges (0.5" gap required for smooth operation)';
+  return m;
+}
+function showErr(mode,m){var el=document.getElementById(mode+'ErrTag');el.textContent='⚠ '+m;el.classList.add('show');}
+function hideErr(mode){document.getElementById(mode+'ErrTag').classList.remove('show');}
+function showWarn(mode,m){var el=document.getElementById(mode==='qc'?'qcWarnTag':'sowErrTag');el.textContent=m;el.classList.add('show');}
+function hideWarn(mode){var el=document.getElementById(mode==='qc'?'qcWarnTag':'sowErrTag');el.classList.remove('show');}
+function showSpinner(mode,t,s){document.getElementById(mode+'Spinner').classList.add('show');document.getElementById(mode+'SpTxt').textContent=t;document.getElementById(mode+'SpSub').textContent=s;}
+function setSpinSub(mode,s){document.getElementById(mode+'SpSub').textContent=s;}
+function hideSpinner(mode){document.getElementById(mode+'Spinner').classList.remove('show');}
 </script>
 </body>
 </html>
