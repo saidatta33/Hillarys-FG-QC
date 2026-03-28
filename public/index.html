@@ -31,9 +31,9 @@ header{background:#1E2235;padding:12px 20px;display:flex;align-items:center;gap:
 .fld input:focus{border-color:#1E2235;}
 
 /* PDF ZONE */
-.pdf-zone{border:2px dashed #E5DBCA;border-radius:8px;background:#fff;padding:28px 20px;text-align:center;cursor:pointer;position:relative;transition:all .15s;margin-bottom:14px;}
+.pdf-zone{border:2px dashed #E5DBCA;border-radius:8px;background:#fff;padding:28px 20px;text-align:center;cursor:pointer;position:relative;transition:all .15s;margin-bottom:14px;overflow:hidden;}
 .pdf-zone:hover,.pdf-zone.drag{border-color:#1E2235;background:#f0f1ff;}
-.pdf-zone input{position:absolute;inset:0;opacity:0;cursor:pointer;width:100%;height:100%;}
+.pdf-zone input{position:absolute;inset:0;opacity:0;cursor:pointer;width:100%;height:100%;z-index:10;}
 .pdf-zone h3{font-size:15px;font-weight:700;margin-bottom:4px;}
 .pdf-zone p{font-size:12px;color:#9CA3AF;}
 .pdf-zone p b{color:#1E2235;}
@@ -175,8 +175,7 @@ header{background:#1E2235;padding:12px 20px;display:flex;align-items:center;gap:
   <div class="pdf-zone" id="qcPdfZone"
     ondragover="event.preventDefault();this.classList.add('drag')"
     ondragleave="this.classList.remove('drag')"
-    ondrop="event.preventDefault();this.classList.remove('drag');handlePdf(event.dataTransfer.files,'qc')">
-    <input type="file" accept=".pdf" id="qcPdfIn" onchange="handlePdf(this.files,'qc')">
+    ondrop="event.preventDefault();this.classList.remove('drag');handlePdf(event.dataTransfer.files,'qc')" onclick="if(event.target===this||event.target.tagName!=='INPUT'){document.getElementById('qcPdfIn').click();}">
     <div class="spinner-wrap" id="qcSpinner">
       <div class="spinner"></div>
       <div class="sp-txt" id="qcSpTxt">Reading PDF...</div>
@@ -185,6 +184,7 @@ header{background:#1E2235;padding:12px 20px;display:flex;align-items:center;gap:
     <div style="font-size:32px;margin-bottom:8px" id="qcPdfIcon">📄</div>
     <h3 id="qcPdfTitle">Drop Insyte Job PDF here</h3>
     <p>or <b>click to browse</b> &mdash; all rooms auto-fill automatically</p>
+    <input type="file" accept=".pdf" id="qcPdfIn" onchange="handlePdf(this.files,'qc')">
   </div>
 
   <div id="qcJobTag" class="job-tag">&#10003; <span id="qcJobTagTxt"></span></div>
@@ -224,8 +224,7 @@ header{background:#1E2235;padding:12px 20px;display:flex;align-items:center;gap:
   <div class="pdf-zone" id="sowPdfZone"
     ondragover="event.preventDefault();this.classList.add('drag')"
     ondragleave="this.classList.remove('drag')"
-    ondrop="event.preventDefault();this.classList.remove('drag');handlePdf(event.dataTransfer.files,'sow')">
-    <input type="file" accept=".pdf" id="sowPdfIn" onchange="handlePdf(this.files,'sow')">
+    ondrop="event.preventDefault();this.classList.remove('drag');handlePdf(event.dataTransfer.files,'sow')" onclick="if(event.target===this||event.target.tagName!=='INPUT'){document.getElementById('sowPdfIn').click();}">
     <div class="spinner-wrap" id="sowSpinner">
       <div class="spinner"></div>
       <div class="sp-txt" id="sowSpTxt">Reading PDF...</div>
@@ -234,6 +233,7 @@ header{background:#1E2235;padding:12px 20px;display:flex;align-items:center;gap:
     <div style="font-size:32px;margin-bottom:8px" id="sowPdfIcon">📄</div>
     <h3 id="sowPdfTitle">Drop Insyte Job PDF here</h3>
     <p>or <b>click to browse</b> &mdash; SOW summary auto-generates</p>
+    <input type="file" accept=".pdf" id="sowPdfIn" onchange="handlePdf(this.files,'sow')">
   </div>
 
   <div id="sowJobTag" class="job-tag">&#10003; <span id="sowJobTagTxt"></span></div>
