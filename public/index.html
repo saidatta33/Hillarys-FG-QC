@@ -270,58 +270,48 @@ function switchTab(tab, btn) {
 // ── PDF PARSE ─────────────────────────────────────────────
 function handlePdf(files, mode) {
   var file = files[0];
-  if (!file || !file.name.toLowerCase().endsWith('.pdf')) { showErr(mode,'Please select a PDF file'); return; }
+  if (!file) { showErr(mode,'Please select a file'); return; }
+  if (!file.name.toLowerCase().endsWith('.pdf')) { showErr(mode,'Please select a PDF file (.pdf)'); return; }
+  if (file.size > 15 * 1024 * 1024) { showErr(mode,'PDF too large (max 15MB). Please use a smaller file.'); return; }
   hideErr(mode);
-  showSpinner(mode, 'Reading PDF...', 'Uploading...');
+  showSpinner(mode, 'Reading PDF...', 'File size: '+Math.round(file.size/1024)+'KB');
   var reader = new FileReader();
-  reader.onload = function(e) { callParse(e.target.result.split(',')[1], file.name, mode); };
-  reader.onerror = function() { hideSpinner(mode); showErr(mode,'Could not read file'); };
+  reader.onload = function(e) {
+    var b64 = e.target.result.split(',')[1];
+    callParse(b64, file.name, mode);
+  };
+  reader.onerror = function(e) { hideSpinner(mode); showErr(mode,'Could not read file: '+e.target.error); };
   reader.readAsDataURL(file);
 }
 
 function callParse(b64, filename, mode) {
   setSpinSub(mode, 'AI extracting all data...');
 
-  // Different prompt for SOW vs QC — SOW needs ALL fields
-  var prompt = mode === 'sow'
-    ? `Extract ALL product line items from this Insyte job sheet PDF with FULL details.
-Return ONLY a valid JSON array. No markdown, no backticks.
-Each object must have:
-{
-  "lineNo": number,
-  "location": "room name",
-  "type": "Curtain or Blind",
-  "section": "Curtain/Roman Blind/Roller Shades/Day & Night Shades/Wood Blinds",
-  "fabricCode": "full code e.g. MPTS012090169",
-  "fabric": "name only e.g. Arden Antique Beige",
-  "fabricVendor": "vendor name",
-  "width": "mm",
-  "drop": "mm",
-  "mountType": "In or Out (ceiling/wall)",
-  "mountDetail": "Ceiling Mount or Wall Mount or Single Wall Mount or Double Wall Mount",
-  "trackType": "I Track or Sleek M Track or Rod or none",
-  "trackVendor": "track vendor",
-  "lining": "Yes or No",
-  "liningType": "Dimout or Blackout or Regular or none",
-  "liningFabric": "lining code and name or none",
-  "headingType": "Triple Pinch Pleat or Ripplefold etc",
-  "panels": "number of panels",
-  "stack": "Free or Centre Open or Left Stack or Right Stack",
-  "controlSystem": "Manual or Motorised",
-  "installSurface": "Normal or Granite"
-}
-Include every row from every table.`
-    : `Extract ALL product line items from this Insyte job sheet PDF.
-Return ONLY a valid JSON array. No markdown, no backticks.
-Each object: {"lineNo":number,"location":"room name","type":"Curtain or Blind","section":"Curtain/Roman Blind/Roller Shades/Day & Night Shades/Wood Blinds","fabricCode":"full code","fabric":"name only","width":"mm","drop":"mm","mountDetail":"mount type","trackType":"track type","lining":"Yes or No","liningType":"Dimout or Blackout or Regular or none","controlSystem":"Manual or Motorised"}
-Rules: fabric = name only no codes in this field. Include every single row.`;
+  var prompt = 'Extract ALL product line items from this Insyte job sheet PDF.\n'
+    + 'Return ONLY a valid JSON array. No markdown, no backticks, no explanation.\n'
+    + 'Each object must have ALL these fields:\n'
+    + '{"lineNo":number,"location":"room name e.g. Living w1","type":"Curtain or Blind","section":"Curtain or Roman Blind or Roller Shades or Day & Night Shades or Wood Blinds","fabricCode":"full product code e.g. MPTS012090169","fabric":"fabric name only - no codes, no W:3000, no Translucent/Blackout prefix","fabricVendor":"vendor name","width":"mm","drop":"mm","mountType":"In or Out","mountDetail":"Ceiling Mount or Wall Mount","trackType":"I Track or Sleek M Track or Rod or none","trackVendor":"track vendor or none","controlSystem":"Manual or Motorised","lining":"Yes or No","liningType":"Dimout or Blackout or Regular or none","liningFabric":"lining fabric name or none","headingType":"heading style or none","panels":"number of panels","stack":"Free or Centre Open or Left or Right or none","installSurface":"Normal or Granite or other"}\n'
+    + 'Rules:\n'
+    + '- type = Curtain for Curtain section, Blind for all other sections\n'
+    + '- fabric: name only, strip all product codes, strip W:3000, strip Translucent/Room Darkening/Blackout/Light Filtering prefix\n'
+    + '- fabricCode: the raw product code only\n'
+    + '- Include EVERY single row from EVERY table';
+
 
   fetch('/api/parse', {
     method: 'POST',
     headers: {'Content-Type': 'application/json'},
     body: JSON.stringify({pdfBase64: b64, filename: filename, prompt: prompt})
   })
-  .then(function(r){ return r.json(); })
+  .then(function(r){
+    setSpinSub(mode, 'Processing response...');
+    if (!r.ok) {
+      return r.text().then(function(txt){
+        throw new Error('Server error '+r.status+': '+(txt.length>200?txt.substring(0,200):txt));
+      });
+    }
+    return r.json();
+  })
   .then(function(data){
     hideSpinner(mode);
     if (data.error) { showErr(mode, 'Error: '+data.error); return; }
@@ -357,7 +347,17 @@ Rules: fabric = name only no codes in this field. Include every single row.`;
       renderSOW();
     }
   })
-  .catch(function(err){ hideSpinner(mode); showErr(mode,'Network error: '+err.message); });
+  .catch(function(err){
+    hideSpinner(mode);
+    var msg = err.message || 'Unknown error';
+    if (msg.includes('Failed to fetch') || msg.includes('NetworkError')) {
+      showErr(mode, 'Network error — check your internet connection and try again');
+    } else if (msg.includes('413') || msg.includes('too large')) {
+      showErr(mode, 'PDF too large for server — try a smaller file');
+    } else {
+      showErr(mode, 'Error: ' + msg);
+    }
+  });
 }
 
 // ══════════════════════════════════════════════════════════
